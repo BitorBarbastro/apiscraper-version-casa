@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\NewspaperController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,3 +27,18 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+
+
+Route::post('/newspapers/subscribe', [NewspaperController::class, 'subscribeButton']);
+// Añadir un periodico a un usuario
+
+Route::post('/newspapers/{userId}/unsubscribe/{newspaperId}', [NewspaperController::class, 'unsubscribeButton']);
+// Eliminar el periodico aasignado del usuario 
+
+
+Route::get('/newspapers/{newspaperId}/headlines', [NewspaperController::class, 'getHeadlinesButton']);
+// Mostrar titulares de un periodico
+
+Route::get('/newspapers/headlines', [NewspaperController::class, 'getAllHeadlinesButton']);
+//Recuperar los titulares de todos los periodicos

@@ -27,6 +27,18 @@ Route::post('/newspapers', [NewspaperController::class, 'store']);
 //     "url": "https://www.elmundo.es/"
 // }
 
+Route::delete('/newspapers/{id}', [NewspaperController::class, 'destroy']);
+//http://localhost:8000/api/newspapers/3
+//Eliminar un periodico
+// {
+//     "name": "Nuevo Nombre del Periódico",
+//     "url": "http://nuevaurl.com"
+// }
+
+Route::put('/newspapers/{id}', [NewspaperController::class, 'update']);
+//Modificar periodico
+//http://localhost:8000/api/newspapers/2
+
 Route::post('/newspapers/{userId}/subscribe/{newspaperId}', [NewspaperController::class, 'subscribe']);
 // Añadir un periodico a un usuario
 // http://localhost:8000/api/newspapers/1/subscribe/1
@@ -39,9 +51,18 @@ Route::post('/newspapers/{userId}/unsubscribe/{newspaperId}', [NewspaperControll
 Route::get('/newspapers/{newspaperId}/headlines', [NewspaperController::class, 'getHeadlines']);
 // Mostrar titulares de un periodico
 // http://localhost:8000/api/newspapers/1/headlines
+
 Route::get('/newspapers/headlines', [NewspaperController::class, 'getAllHeadlines']);
 //Recuperar los titulares de todos los periodicos
-// http://localhost:8000/api/headlines
+// http://localhost:8000/api/newspapers/headlines
+
+
+Route::get('/newspapers/{id}', [NewspaperController::class, 'show']);
+//Recuperar datos de un periodico
+//http://localhost:8000/api/newspapers/1
+Route::get('/newspapers', [NewspaperController::class, 'index']);
+//mostrar todos los periodicos
+//http://localhost:8000/api/newspapers
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/user/newspapers', [UserController::class, 'getSubscribedNewspapers']);
