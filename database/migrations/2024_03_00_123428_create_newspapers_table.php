@@ -16,6 +16,7 @@ class CreateNewspapersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('url');
+            $table->string('urlrss');
             $table->timestamps();
         });
     }

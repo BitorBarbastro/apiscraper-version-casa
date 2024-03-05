@@ -24,7 +24,8 @@ Route::post('/newspapers', [NewspaperController::class, 'store']);
 // Añadir un periodico con post
 // http://localhost:8000/api/newspapers
 // {
-//     "url": "https://www.elmundo.es/"
+//     "url": "https://www.heraldodiariodesoria.es/"
+//     "urlrss":"https://www.heraldodiariodesoria.es/rss/home.xml"
 // }
 
 Route::delete('/newspapers/{id}', [NewspaperController::class, 'destroy']);
@@ -44,10 +45,11 @@ Route::post('/newspapers/{userId}/subscribe/{newspaperId}', [NewspaperController
 // http://localhost:8000/api/newspapers/1/subscribe/1
 
 Route::post('/newspapers/{userId}/unsubscribe/{newspaperId}', [NewspaperController::class, 'unsubscribe']);
-// Eliminar el periodico aasignado del usuario 
+// Eliminar el periodico asignado del usuario 
 // http://localhost:8000/api/newspapers/1/unsubscribe/1
 
 
+Route::get('/newspapers/{newspaperId}/checkheadlines', [NewspaperController::class, 'checkHeadlines']);
 Route::get('/newspapers/{newspaperId}/headlines', [NewspaperController::class, 'getHeadlines']);
 // Mostrar titulares de un periodico
 // http://localhost:8000/api/newspapers/1/headlines

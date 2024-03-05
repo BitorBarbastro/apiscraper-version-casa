@@ -16,8 +16,8 @@ class NewspaperController extends Controller
         // Validar los datos de entrada
         $validatedData = $request->validate([
             'url' => 'required|url',
+            'urlrss' => 'required|url',
         ]);
-
         // Crear una nueva instancia de Goutte
         $client = new Client();
 
@@ -30,8 +30,11 @@ class NewspaperController extends Controller
 
         // Añadir el título extraído a los datos validados
         $validatedData['name'] = $title;
+        $validatedData['urlrss'];
 
         // Crear un nuevo periódico
+/*         dd($validatedData);
+ */
         $newspaper = Newspaper::create($validatedData);
 
         // Devolver una respuesta
@@ -121,6 +124,69 @@ class NewspaperController extends Controller
         return response()->json([
             'data' => $data
         ]);
+    }
+    public function checkHeadlines($newspaperId)
+    {
+        $data = [];
+        $datarss = [];
+        $commonData = [];//En esta array se almacenan los titulares comunes
+        $newspaper = Newspaper::findOrFail($newspaperId);
+
+        $client = new Client();
+        $crawler = $client->request('GET', $newspaper->url);
+        $crawler->filter('article')->each(function ($node) use (&$data) {
+            try {
+                $link = $node->filter('a')->attr('href');
+                if ($node->filter('h1')->count() > 0) {
+                    $title = $node->filter('h1')->text();
+                } else if ($node->filter('h2')->count() > 0) {
+                    $title = $node->filter('h2')->text();
+                } else {
+                    $title = $node->filter('h3')->text();
+                }
+                $data[] = [$title => $link];
+            } catch (\Exception $error) {
+            }
+        });
+
+        $client = new Client();
+        $crawler = $client->request('GET', $newspaper->urlrss);
+        $crawler->filter('item')->each(function ($node) use (&$datarss) {
+            try {
+
+                $title = $node->filter('title')->text();
+                $link = $node->filter('guid')->text();
+
+                $datarss[] = [$title => $link];
+            } catch (\Exception $error) {
+            }
+        });
+        //la "funcion" siguiente  se podria haber implementado en el try de arriba pero no me he dado cuenta antes
+
+        for ($i = 0; $i < count($data); $i++) { //Una vuelta por cada titular en el scrap original
+            if (isset($datarss[$i])) { //Si el rss tiene la posicion la comprueba
+                for ($j = 0; $j < count($datarss); $j++) { //mira por toda la lista del rss si el titular original existe
+                    if ($data[$i] == $datarss[$j]) {
+                        $commonData[] = [$data[$i]];//Se registra en un json para mostrarlo despues
+                    }
+                }
+            }
+        }
+        $precision = count($commonData) / count($data) * 100;
+        // dd($precision);
+        // mostrar los titulos de los enlaces recuperados.-
+        return [
+            response()->json([
+                'data' => $commonData,
+                'precision' => $precision . '%'
+            ]),
+
+        ];
+    }
+
+    public function showHeadlinesDiff()
+    {
+        return view('Dashboard');
     }
     public function getAllHeadlines()
     {

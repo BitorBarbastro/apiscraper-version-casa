@@ -30,6 +30,8 @@ Route::middleware([
 
 
 
+Route::get('/dashboard/compararRSS', [NewspaperController::class, 'showHeadlinesDiff'])->name('compararRSS');
+
 Route::post('/newspapers/subscribe', [NewspaperController::class, 'subscribeButton']);
 // Añadir un periodico a un usuario
 

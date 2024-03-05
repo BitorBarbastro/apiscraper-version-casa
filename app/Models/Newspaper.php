@@ -9,7 +9,7 @@ class Newspaper extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'url'];
+    protected $fillable = ['name', 'url', 'urlrss'];
 
     public function users()
     {
